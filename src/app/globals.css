@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300..900;1,300..900&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap");
+@import "tailwindcss";
+
+:root {
+  --color-black: #050505;
+  --color-ink: #1F1B16;
+  --color-paper: #F8F1E4;
+  --color-parchment: #EFE2C6;
+  --color-tomato: #C4472D;
+  --color-chile: #7A2E22;
+  --color-corn: #E9B949;
+  --color-herb: #5E7C47;
+  --color-cream: #FFF8EA;
+  --color-smoke: rgba(0, 0, 0, 0.64);
+
+  --font-display: "Raleway", sans-serif;
+  --font-body: "Lato", sans-serif;
+  --font-recipe: "Lora", serif;
+}
+
+@theme inline {
+  --color-black: var(--color-black);
+  --color-ink: var(--color-ink);
+  --color-paper: var(--color-paper);
+  --color-parchment: var(--color-parchment);
+  --color-tomato: var(--color-tomato);
+  --color-chile: var(--color-chile);
+  --color-corn: var(--color-corn);
+  --color-herb: var(--color-herb);
+  --color-cream: var(--color-cream);
+  --color-smoke: var(--color-smoke);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-recipe: var(--font-recipe);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  line-height: 1.6;
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+
+.font-recipe {
+  font-family: var(--font-recipe);
+}
+
+::selection {
+  background-color: var(--color-corn);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-tomato);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "project": "recetario-vivo",
+  "repo": "executiveusa/kupuri-recetario-vivo",
+  "branch": "claude/exciting-hopper-uqtpx9",
+  "beads": [
+    { "id": "bead-0001", "phase": "scaffold", "status": "complete" },
+    { "id": "bead-0002", "phase": "skill-ingestion", "status": "complete" },
+    { "id": "bead-0003", "phase": "inspiration-analysis", "status": "complete" },
+    { "id": "bead-0005", "phase": "content-schema", "status": "complete" },
+    { "id": "bead-0006", "phase": "hero-design", "status": "in-progress" },
+    { "id": "bead-0007", "phase": "flipbook-ui", "status": "in-progress" },
+    { "id": "bead-0008", "phase": "voice-assistant", "status": "in-progress" },
+    { "id": "bead-0009", "phase": "spanish-localization", "status": "in-progress" },
+    { "id": "bead-0010", "phase": "build-test", "status": "pending" },
+    { "id": "bead-0012", "phase": "pr-deploy", "status": "pending" }
+  ]
+}
