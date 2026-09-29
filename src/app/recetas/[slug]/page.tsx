@@ -156,7 +156,7 @@ export default function RecipeDetailPage() {
             {recipe.costPerServingMxn && (
               <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 text-white text-sm backdrop-blur-sm">
                 <DollarSign size={14} />
-                ${recipe.costPerServingMxn} MXN/porción
+                {recipe.costPerServingMxn}/porción
               </span>
             )}
             {totalTime > 0 && (
@@ -273,13 +273,10 @@ export default function RecipeDetailPage() {
                         Costo Total
                       </p>
                       <p className="text-2xl font-bold text-[var(--color-ink)]">
-                        ${recipe.totalCostMxn}{" "}
-                        <span className="text-sm font-normal text-[var(--color-ink)]/40">
-                          MXN
-                        </span>
+                        {recipe.totalCostMxn}
                       </p>
                       <p className="text-xs text-[var(--color-ink)]/40 mt-1">
-                        Aprox. USD ${recipe.totalCostUsd}
+                        Aprox. USD {recipe.totalCostUsd}
                       </p>
                     </div>
                   )}

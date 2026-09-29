@@ -98,7 +98,7 @@ function RecipeContent({
           <p className="text-xs mt-1" style={{ color: "#5E7C47" }}>
             {recipe.yieldEsMx}
             {recipe.costPerServingMxn &&
-              ` · $${recipe.costPerServingMxn} MXN/porcion`}
+              ` · ${recipe.costPerServingMxn}/porción`}
           </p>
         )}
       </div>
