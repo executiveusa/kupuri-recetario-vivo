@@ -86,7 +86,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           {recipe.costPerServingMxn && (
             <span className="inline-flex items-center gap-1">
               <DollarSign className="w-3 h-3" />
-              ${recipe.costPerServingMxn} MXN/porción
+              {recipe.costPerServingMxn}/porción
             </span>
           )}
           {recipe.yieldEsMx && (

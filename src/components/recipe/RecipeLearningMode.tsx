@@ -56,11 +56,11 @@ export default function RecipeLearningMode({
             <DollarSign className="w-4 h-4 text-[#5E7C47]" />
             <div>
               <p className="font-[Raleway] font-bold text-[#1F1B16] text-lg leading-none">
-                ${recipe.totalCostMxn} MXN
+                {recipe.totalCostMxn}
               </p>
               {recipe.totalCostUsd && (
                 <p className="font-[Lato] text-[#1F1B16]/40 text-xs mt-0.5">
-                  ~${recipe.totalCostUsd} USD
+                  ~{recipe.totalCostUsd} USD
                 </p>
               )}
             </div>
@@ -71,7 +71,7 @@ export default function RecipeLearningMode({
             <Users className="w-4 h-4 text-[#5E7C47]" />
             <div>
               <p className="font-[Raleway] font-bold text-[#1F1B16] text-lg leading-none">
-                ${recipe.costPerServingMxn}/porción
+                {recipe.costPerServingMxn}/porción
               </p>
               {recipe.yieldEsMx && (
                 <p className="font-[Lato] text-[#1F1B16]/40 text-xs mt-0.5">

@@ -222,7 +222,7 @@ function RecipeMatchCard({
         </h3>
         {recipe.costPerServingMxn && (
           <span className="text-xs flex-shrink-0 px-1.5 py-0.5 rounded bg-[#E9B949]/20 text-[#8B7355]">
-            ${recipe.costPerServingMxn}
+            {recipe.costPerServingMxn}
           </span>
         )}
       </div>
