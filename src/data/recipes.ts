@@ -1,4 +1,5 @@
 import type { Recipe, CookbookSection, Cookbook } from "@/lib/types";
+import { noBakeChocolatePeanutButterCookies } from "./noBakeCookies";
 
 export const sampleSections: CookbookSection[] = [
   { id: "breakfast", titleEn: "Breakfast", titleEsMx: "Desayuno", order: 1 },
@@ -16,9 +17,11 @@ export const sampleSections: CookbookSection[] = [
     order: 4,
   },
   { id: "baking", titleEn: "Baking", titleEsMx: "Panadería", order: 5 },
+  { id: "desserts", titleEn: "Desserts", titleEsMx: "Postres", order: 6 },
 ];
 
 export const sampleRecipes: Recipe[] = [
+  noBakeChocolatePeanutButterCookies,
   {
     slug: "tomato-scrambled-eggs",
     titleEn: "Tomato Scrambled Eggs",
