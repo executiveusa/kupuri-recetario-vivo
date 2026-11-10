@@ -52,6 +52,7 @@ export default function RecipeDetailPage() {
   const slug = typeof params.slug === "string" ? params.slug : "";
   const recipe = getRecipeBySlug(slug);
   const [mode, setMode] = useState<ViewMode>("libro");
+  const [language, setLanguage] = useState<"es" | "en">("es");
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(
     new Set()
   );
@@ -141,14 +142,14 @@ export default function RecipeDetailPage() {
             className="text-3xl sm:text-5xl font-bold text-white mb-3 leading-tight"
             style={{ fontFamily: "var(--font-raleway), Raleway, sans-serif" }}
           >
-            {recipe.titleEsMx}
+            {language === "en" ? recipe.titleEn : recipe.titleEsMx}
           </h1>
 
           <p
             className="text-lg text-white/80 max-w-2xl leading-relaxed"
             style={{ fontFamily: "var(--font-lora), Lora, serif" }}
           >
-            {recipe.hero.oneLineHookEsMx}
+            {language === "en" ? recipe.commentaryEn : recipe.hero.oneLineHookEsMx}
           </p>
 
           {/* Meta pills */}
@@ -168,7 +169,7 @@ export default function RecipeDetailPage() {
             {recipe.yieldEsMx && (
               <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 text-white text-sm backdrop-blur-sm">
                 <Users size={14} />
-                {recipe.yieldEsMx}
+                {language === "en" ? recipe.yieldEn : recipe.yieldEsMx}
               </span>
             )}
           </div>
@@ -205,10 +206,14 @@ export default function RecipeDetailPage() {
             Modo Cocinar
           </button>
 
+          <div className="flex items-center gap-1 ml-auto" aria-label="Recipe language">
+            <button type="button" onClick={() => setLanguage("es")} aria-pressed={language === "es"} className={`px-2 py-1 rounded text-sm ${language === "es" ? "bg-[var(--color-ink)] text-white" : "text-[var(--color-ink)]"}`}>ES</button>
+            <button type="button" onClick={() => setLanguage("en")} aria-pressed={language === "en"} className={`px-2 py-1 rounded text-sm ${language === "en" ? "bg-[var(--color-ink)] text-white" : "text-[var(--color-ink)]"}`}>EN</button>
+          </div>
           {/* Voice button */}
           <div className="ml-auto">
             <Link
-              href={`/voz?receta=${recipe.slug}`}
+              href={`/voz?receta=${recipe.slug}&lang=${language}`}
               className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[var(--color-ink)]/50 hover:bg-[var(--color-paper)] transition-all no-underline"
             >
               <Mic size={16} />
@@ -237,7 +242,7 @@ export default function RecipeDetailPage() {
                     className="text-lg text-[var(--color-ink)]/70 leading-relaxed italic"
                     style={{ fontFamily: "var(--font-lora), Lora, serif" }}
                   >
-                    {recipe.commentaryEsMx}
+                    {language === "en" ? recipe.commentaryEn : recipe.commentaryEsMx}
                   </p>
                 </div>
 
@@ -261,7 +266,7 @@ export default function RecipeDetailPage() {
                             {ing.amount}
                           </span>
                         )}{" "}
-                        {ing.esMx.replace(ing.amount || "", "").trim() || ing.esMx}
+                        {language === "en" ? ing.originalEn : ing.esMx}
                       </li>
                     ))}
                   </ul>
@@ -307,7 +312,7 @@ export default function RecipeDetailPage() {
                             className="text-[var(--color-ink)]/80 leading-relaxed"
                             style={{ fontFamily: "var(--font-lora), Lora, serif" }}
                           >
-                            {step.textEsMx}
+                            {language === "en" ? step.textEn : step.textEsMx}
                           </p>
                           {step.timers && step.timers.length > 0 && (
                             <div className="flex flex-wrap gap-2 mt-2">
@@ -351,7 +356,7 @@ export default function RecipeDetailPage() {
                               className="text-sm leading-relaxed"
                               style={{ fontFamily: "var(--font-lora), Lora, serif" }}
                             >
-                              {tip.textEsMx}
+                              {language === "en" ? tip.textEn : tip.textEsMx}
                             </p>
                           </div>
                         );
@@ -411,7 +416,7 @@ export default function RecipeDetailPage() {
                               : "text-[var(--color-ink)]/70"
                           )}
                         >
-                          {ing.esMx}
+                          {language === "en" ? ing.originalEn : ing.esMx}
                         </span>
                       </button>
                     ))}
@@ -466,7 +471,7 @@ export default function RecipeDetailPage() {
                               )}
                               style={{ fontFamily: "var(--font-lora), Lora, serif" }}
                             >
-                              {step.textEsMx}
+                              {language === "en" ? step.textEn : step.textEsMx}
                             </p>
                             {step.timers &&
                               step.timers.length > 0 &&
