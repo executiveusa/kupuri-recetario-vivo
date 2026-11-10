@@ -210,6 +210,9 @@ export default function RecipeDetailPage() {
             <button type="button" onClick={() => setLanguage("es")} aria-pressed={language === "es"} className={`px-2 py-1 rounded text-sm ${language === "es" ? "bg-[var(--color-ink)] text-white" : "text-[var(--color-ink)]"}`}>ES</button>
             <button type="button" onClick={() => setLanguage("en")} aria-pressed={language === "en"} className={`px-2 py-1 rounded text-sm ${language === "en" ? "bg-[var(--color-ink)] text-white" : "text-[var(--color-ink)]"}`}>EN</button>
           </div>
+          <Link href={`/cocinar/${recipe.slug}`} className="px-3 py-2 rounded-lg text-sm bg-[#5E7C47] text-white no-underline">
+            Compartir / Share & Cook
+          </Link>
           {/* Voice button */}
           <div className="ml-auto">
             <Link
