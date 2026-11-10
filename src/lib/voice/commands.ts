@@ -5,6 +5,16 @@ export interface VoiceCommand {
 }
 
 export const voiceCommands: VoiceCommand[] = [
+  { pattern: /(?:read|tell me) (?:the )?recipe/i, action: "readRecipe" },
+  { pattern: /(?:read|list) (?:the )?ingredients/i, action: "readIngredients" },
+  { pattern: /(?:read|tell me) (?:the )?(?:steps|instructions)/i, action: "readSteps" },
+  { pattern: /(?:read|tell me) step (\\d+)/i, action: "readStep", params: ["stepNumber"] },
+  { pattern: /(?:open|find|search for) (.+)/i, action: "openRecipe", params: ["recipeName"] },
+  { pattern: /(?:stop talking|be quiet|stop speaking)/i, action: "stopSpeaking" },
+  { pattern: /(?:repeat that|say it again)/i, action: "repeat" },
+  { pattern: /l[ée]eme\\s*(?:la\\s*)?receta/i, action: "readRecipe" },
+  { pattern: /l[ée]eme\\s*(?:los\\s*)?pasos/i, action: "readSteps" },
+
   {
     pattern: /siguiente\s*p[áa]gina/i,
     action: "nextPage",
