@@ -17,14 +17,11 @@ export function speak(text: string, lang = "es-MX"): void {
   utterance.rate = 0.9;
   utterance.pitch = 1;
 
-  // Try to find a Spanish voice
+  // Respect the selected language; avoid assigning a Spanish voice to English text.
   const voices = window.speechSynthesis.getVoices();
-  const spanishVoice = voices.find(
-    (v) => v.lang === "es-MX" || v.lang.startsWith("es")
-  );
-  if (spanishVoice) {
-    utterance.voice = spanishVoice;
-  }
+  const matchingVoice = voices.find((v) => v.lang.toLowerCase() === lang.toLowerCase())
+    ?? voices.find((v) => v.lang.toLowerCase().startsWith(lang.split("-")[0].toLowerCase()));
+  if (matchingVoice) utterance.voice = matchingVoice;
 
   currentUtterance = utterance;
   window.speechSynthesis.speak(utterance);
