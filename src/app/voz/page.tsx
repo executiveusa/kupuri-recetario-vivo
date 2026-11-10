@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 
+const OpenAIRecipeVoice = dynamic(() => import("@/components/voice/OpenAIRecipeVoice"), { ssr: false });
+
 const VoiceCookAssistant = dynamic(
   () => import("@/components/voice/VoiceCookAssistant"),
   { ssr: false }
@@ -18,7 +20,11 @@ export default function VozPage() {
           Cocina con las manos libres usando comandos de voz
         </p>
 
-        <VoiceCookAssistant />
+        <OpenAIRecipeVoice />
+        <details className="mt-6 rounded-xl border border-[#D4C5A0] p-4">
+          <summary className="cursor-pointer font-semibold">Voz clásica / Classic voice fallback</summary>
+          <div className="mt-4"><VoiceCookAssistant /></div>
+        </details>
 
         <section className="mt-8 p-6 rounded-2xl" style={{ backgroundColor: "#FFF8EA" }}>
           <h2 className="text-lg font-bold mb-4" style={{ fontFamily: "Raleway, sans-serif" }}>
