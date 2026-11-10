@@ -506,7 +506,13 @@ export default function RecipeDetailPage() {
 
         {/* Attribution */}
         <div className="mt-12 pt-8 border-t border-[var(--color-parchment)]">
-          <LicenseAttribution size="compact" />
+          {recipe.slug === "no-bake-chocolate-peanut-butter-oat-cookies" ? (
+            <p className="text-xs text-[var(--color-ink)]/60">
+              {language === "en"
+                ? "Contributed recipe adapted from a user-supplied photograph, citing Food.com recipe 23821 (2017). Not part of Good and Cheap."
+                : "Receta compartida y adaptada de una fotografía proporcionada por un usuario, que cita Food.com receta 23821 (2017). No forma parte de Bueno y Barato."}
+            </p>
+          ) : <LicenseAttribution size="compact" />}
         </div>
       </div>
     </div>
