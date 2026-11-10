@@ -29,6 +29,21 @@ export default function SharedCookingPage() {
   const params = useParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
   const recipe = getRecipeBySlug(slug);
+  // Atomic stages allow hands-free confirmation of each addition.
+  const cookieStages: Array<{ textEn: string; textEsMx: string; timers?: { label: string; seconds: number }[] }> = [
+    { textEn: "Add half a cup of butter to a large saucepan.", textEsMx: "Agrega media taza de mantequilla a una cacerola grande." },
+    { textEn: "Add one and a half cups of white sugar.", textEsMx: "Agrega una taza y media de azúcar blanca." },
+    { textEn: "Add half a cup of packed brown sugar.", textEsMx: "Agrega media taza de azúcar morena compactada." },
+    { textEn: "Add half a cup of milk.", textEsMx: "Agrega media taza de leche." },
+    { textEn: "Add four tablespoons of unsweetened cocoa powder.", textEsMx: "Agrega cuatro cucharadas de cocoa en polvo sin azúcar." },
+    { textEn: "Add a pinch of kosher salt.", textEsMx: "Agrega una pizca de sal kosher." },
+    { textEn: "Heat and stir the mixture until it reaches a full rolling boil, then boil for one minute.", textEsMx: "Calienta y revuelve hasta que hierva intensamente; después mantén el hervor durante un minuto.", timers: [{ label: "Boil / Hervir", seconds: 60 }] },
+    { textEn: "Remove the saucepan from heat. Add half a cup of creamy peanut butter and stir until melted.", textEsMx: "Retira la cacerola del fuego. Agrega media taza de crema de cacahuate y revuelve hasta que se derrita." },
+    { textEn: "Stir in two teaspoons of vanilla extract.", textEsMx: "Incorpora dos cucharaditas de extracto de vainilla." },
+    { textEn: "Add three cups of dry quick-cooking oats and mix until all the oats are coated.", textEsMx: "Agrega tres tazas de avena seca de cocción rápida y mezcla hasta cubrir toda la avena." },
+    { textEn: "Drop tablespoon-sized portions onto wax paper and let them cool until firm.", textEsMx: "Coloca porciones de una cucharada sobre papel encerado y deja enfriar hasta que estén firmes." },
+  ];
+  const stages = recipe?.slug === "no-bake-chocolate-peanut-butter-oat-cookies" ? cookieStages : (recipe?.steps ?? []);
   const [lang, setLang] = useState<"es" | "en">("es");
   const [step, setStep] = useState(0);
   const [checked, setChecked] = useState<number[]>([]);
@@ -45,7 +60,7 @@ export default function SharedCookingPage() {
     if (!slug) return;
     try {
       const value = JSON.parse(localStorage.getItem(`recetario-cook-${slug}`) ?? "{}") as { step?: number; checked?: number[] };
-      const max = recipe?.steps.length ?? 0;
+      const max = stages.length;
       if (typeof value.step === "number" && value.step >= 0 && value.step <= max) setStep(value.step);
       if (Array.isArray(value.checked)) setChecked(value.checked.filter((i) => Number.isInteger(i) && i >= 0 && i < max));
     } catch { /* malformed local storage: start fresh */ }
@@ -81,17 +96,17 @@ export default function SharedCookingPage() {
   speakRef.current = say;
 
   const instruction = useCallback((index: number, locale: "es" | "en") => {
-    if (!recipe || index >= recipe.steps.length) {
+    if (!recipe || index >= stages.length) {
       return locale === "en" ? "All steps complete. Enjoy your cookies!" : "Terminaste todos los pasos. ¡Disfruta tus galletas!";
     }
-    const s = recipe.steps[index];
+    const s = stages[index];
     return `${locale === "en" ? "Step" : "Paso"} ${index + 1}. ${locale === "en" ? s.textEn : s.textEsMx}`;
   }, [recipe]);
 
   const complete = useCallback(() => {
     if (!recipe) return;
     const current = progress.current;
-    if (current.step >= recipe.steps.length) return;
+    if (current.step >= stages.length) return;
     const next = current.step + 1;
     const nextChecked = Array.from(new Set([...current.checked, current.step]));
     progress.current = { ...current, step: next, checked: nextChecked };
@@ -162,8 +177,8 @@ export default function SharedCookingPage() {
   }
 
   if (!recipe) return <main className="min-h-screen p-12"><h1>Receta no encontrada / Recipe not found</h1><Link href="/recetas">Recetas</Link></main>;
-  const done = step >= recipe.steps.length;
-  const currentStep = recipe.steps[step];
+  const done = step >= stages.length;
+  const currentStep = stages[step];
   return (
     <main className="min-h-screen bg-[#F8F1E4] text-[#1F1B16] pt-24 pb-20 px-4">
       <div className="max-w-3xl mx-auto space-y-6">
@@ -188,8 +203,8 @@ export default function SharedCookingPage() {
           <ul className="space-y-2">{recipe.ingredients.map((ing,i)=><li key={i} className="text-sm">{lang === "en" ? ing.originalEn : ing.esMx}</li>)}</ul>
         </section>
         <section className="bg-white rounded-2xl p-5 border border-[#D4C5A0] space-y-4">
-          <p className="font-semibold">{lang === "en" ? "Progress" : "Progreso"}: {checked.length} / {recipe.steps.length}</p>
-          <div className="w-full h-2 bg-[#EFE2C6] rounded-full overflow-hidden"><div className="h-full bg-[#5E7C47]" style={{ width: `${checked.length / recipe.steps.length * 100}%` }}/></div>
+          <p className="font-semibold">{lang === "en" ? "Progress" : "Progreso"}: {checked.length} / {stages.length}</p>
+          <div className="w-full h-2 bg-[#EFE2C6] rounded-full overflow-hidden"><div className="h-full bg-[#5E7C47]" style={{ width: `${checked.length / stages.length * 100}%` }}/></div>
           <h2 className="font-bold text-2xl">{done ? (lang === "en" ? "Finished!" : "¡Terminado!") : `${lang === "en" ? "Step" : "Paso"} ${step + 1}`}</h2>
           <p className="text-lg leading-relaxed">{done ? (lang === "en" ? "Your cookies are ready to cool and enjoy." : "Deja enfriar las galletas y disfrútalas.") : (lang === "en" ? currentStep.textEn : currentStep.textEsMx)}</p>
           {currentStep?.timers?.map((timer,i)=><p className="text-sm" key={i}>{lang === "en" ? "Suggested timer" : "Temporizador sugerido"}: {timer.seconds} {lang === "en" ? "seconds" : "segundos"} — {lang === "en" ? "not started automatically" : "no se inicia automáticamente"}</p>)}
@@ -202,7 +217,7 @@ export default function SharedCookingPage() {
         <section className="bg-white rounded-2xl p-5 border border-[#D4C5A0]">
           <h2 className="font-bold mb-3">{lang === "en" ? "Step checklist" : "Lista de pasos"}</h2>
           <ol className="space-y-3">
-            {recipe.steps.map((item,i)=><li key={i}>
+            {stages.map((item,i)=><li key={i}>
               <button type="button" onClick={()=> { if (i===step) complete(); else { const next=checked.includes(i) ? checked.filter(n=>n!==i) : [...checked,i]; setChecked(next); progress.current.checked=next; } }} aria-label={`${checked.includes(i) ? "Uncheck" : "Check"} step ${i+1}`} className="flex text-left items-start gap-3 w-full">
                 <span aria-hidden="true" className="border-2 rounded w-6 h-6 text-center shrink-0">{checked.includes(i) ? "✓" : ""}</span>
                 <span className={checked.includes(i) ? "line-through opacity-50" : ""}>{i+1}. {lang === "en" ? item.textEn : item.textEsMx}</span>
