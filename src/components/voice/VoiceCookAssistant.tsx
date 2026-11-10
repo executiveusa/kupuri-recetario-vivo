@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useCallback, useRef, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getRecipeBySlug, sampleRecipes } from "@/data/recipes";
 import { cn } from "@/lib/utils";
 import { Mic, MicOff, Send, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -96,6 +98,11 @@ export default function VoiceCookAssistant({
   onCommand,
   className,
 }: VoiceCookAssistantProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const recipe = getRecipeBySlug(searchParams.get("receta") ?? "");
+  const language = searchParams.get("lang") === "en" ? "en" : "es";
+  const speechLang = language === "en" ? "en-US" : "es-MX";
   const [status, setStatus] = useState<AssistantStatus>("idle");
   const [entries, setEntries] = useState<TranscriptEntry[]>([]);
   const [textInput, setTextInput] = useState("");
@@ -126,7 +133,38 @@ export default function VoiceCookAssistant({
       setStatus("processing");
       addEntry("user", cmd.raw);
 
-      const response = getResponseText(cmd);
+      let response = getResponseText(cmd);
+      const translated = (en: string, es: string) => language === "en" ? en : es;
+      if (recipe && ["readRecipe", "readIngredients", "readSteps", "readStep", "readTips"].includes(cmd.action)) {
+        const ingredients = recipe.ingredients.map(i => language === "en" ? i.originalEn : i.esMx);
+        const steps = recipe.steps.map(s => language === "en" ? s.textEn : s.textEsMx);
+        if (cmd.action === "readIngredients") response = ingredients.join(". ");
+        if (cmd.action === "readSteps") response = steps.map((s, i) => `${i + 1}. ${s}`).join(". ");
+        if (cmd.action === "readRecipe") response = [language === "en" ? recipe.titleEn : recipe.titleEsMx, translated("Ingredients", "Ingredientes"), ...ingredients, translated("Steps", "Pasos"), ...steps].join(". ");
+        if (cmd.action === "readStep") {
+          const index = Number(cmd.params.stepNumber) - 1;
+          response = steps[index] ?? translated("Step not found.", "Paso no encontrado.");
+        }
+        if (cmd.action === "readTips") response = recipe.tips.map(t => language === "en" ? t.textEn : t.textEsMx).join(". ");
+      }
+      if (!recipe && ["readRecipe", "readIngredients", "readSteps", "readStep", "readTips"].includes(cmd.action)) {
+        response = translated("Open a recipe first to hear its details.", "Abre una receta para escuchar sus detalles.");
+      }
+      if (cmd.action === "openRecipe" || cmd.action === "search") {
+        const query = (cmd.params.recipeName ?? cmd.params.query ?? "").toLocaleLowerCase();
+        const match = sampleRecipes.find(r => r.titleEn.toLocaleLowerCase().includes(query) || r.titleEsMx.toLocaleLowerCase().includes(query));
+        if (match) {
+          router.push(`/recetas/${match.slug}`);
+          response = translated(`Opening ${match.titleEn}.`, `Abriendo ${match.titleEsMx}.`);
+        } else {
+          router.push(`/recetas?buscar=${encodeURIComponent(query)}`);
+          response = translated("Opening recipe search.", "Abriendo el buscador de recetas.");
+        }
+      }
+      if (cmd.action === "goHome") router.push("/");
+      if (cmd.action === "nextPage" || cmd.action === "prevPage" || cmd.action === "goToPage") {
+        response = translated("Page-turning from the assistant is not available yet. Open the cookbook.", "Para pasar páginas, abre el libro. El control por voz aún no está disponible.");
+      }
 
       // Show feedback briefly
       setCommandFeedback(`${cmd.action}`);
@@ -148,12 +186,12 @@ export default function VoiceCookAssistant({
       if (response) {
         addEntry("assistant", response);
         setStatus("speaking");
-        speak(response);
+        speak(response, speechLang);
       }
 
       setStatus("idle");
     },
-    [addEntry, onCommand]
+    [addEntry, onCommand, recipe, language, speechLang, router]
   );
 
   /* Voice assistant hook */
@@ -164,7 +202,7 @@ export default function VoiceCookAssistant({
     stopListening,
     isSupported,
   } = useVoiceAssistant({
-    lang: "es-MX",
+    lang: speechLang,
     continuous: false,
     onCommand: handleCommand,
   });
@@ -205,7 +243,7 @@ export default function VoiceCookAssistant({
       const fallback =
         "No entendi el comando. Intenta decir: siguiente pagina, leer receta, o buscar algo.";
       addEntry("assistant", fallback);
-      speak(fallback);
+      speak(fallback, speechLang);
     }
   };
 
